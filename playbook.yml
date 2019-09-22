@@ -1,0 +1,23 @@
+-  name : centos 초기 세팅
+   hosts : centos # 그룹 지정, 그룹이 아니라 호스트만 지정하고 싶으면 사전에 정의한 centos-01 사용
+   become : true # 루트 권한 사용 여부
+   gather_facts: false # 호스트 리소스 정보 수집하지 않음
+   tasks :
+     - name : timezone 설정
+       timezone : name=Asia/Seoul 
+     - name : epel-release 설치
+       yum : name=epel-release state=installed
+     - name : yum update
+       yum : name=* state=latest
+     - name : httpd install
+       yum : name=httpd state=latest
+     - name : httpd service start
+       service : name=httpd state=started     
+     - name : httpd enable 
+       systemd : name=httpd enabled=yes
+     - name : selinux 설정 해제
+       lineinfile :
+        dest : /etc/sysconfig/selinux
+        backrefs : yes
+        regexp : 'enforcing'
+        line : 'disabled'
